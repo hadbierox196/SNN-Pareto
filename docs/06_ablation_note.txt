@@ -1,0 +1,6 @@
+To address potential parameter confounds, we trained a capacity-constrained
+ANN baseline (105,866 parameters, 7.8x fewer than the full ANN) with
+identical training configuration, achieving 91.61% +/- 0.08% test accuracy
+at 5138.5 nJ per inference. The SNN at T*=8 achieves 89.69% accuracy at
+3910.1 nJ -- lower accuracy at 1.3x lower energy -- confirming that the
+SNN efficiency advantage is not an artifact of parameter count reduction.
