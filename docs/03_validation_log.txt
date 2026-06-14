@@ -1,0 +1,45 @@
+TOY NETWORK VALIDATION LOG
+Week 3 — SynOps Counter
+===========================
+
+Network      : Linear(2 -> 3)
+Input        : all-ones spike tensor [T=1, B=1, N_pre=2]
+Weight shape : [N_post=3, N_pre=2]
+
+Hand Calculation (derived before running any code):
+  Step 1 — count total spikes:
+    total_spikes = T x B x N_pre
+                 = 1 x 1 x 2
+                 = 2
+
+  Step 2 — determine fan-out:
+    fan_out = N_post = 3
+    (each pre-synaptic neuron connects to all 3 post-synaptic neurons)
+
+  Step 3 — compute SynOps:
+    SynOps = total_spikes x fan_out
+           = 2 x 3
+           = 6
+
+Expected result : 6
+Code output     : 6.0
+Match           : PASS
+
+───────────────────────────────────────────────────
+Sanity check (50% spike zeroing on lif3->fc2):
+  Original SynOps : 465,150
+  Zeroed SynOps   : 230,890
+  Reduction       : 50.4%  (expected ~50%)
+  Result          : PASS
+───────────────────────────────────────────────────
+
+Note on input:
+  Energy figures in Week 3 are computed on torch.rand noise input,
+  not real Fashion-MNIST images. Spike rates are approximately half
+  of trained values as a result. The counting logic is validated
+  and correct. Final paper energy figures will be recomputed on
+  real Fashion-MNIST test batches in Week 4.
+
+Date completed  : 2026-06-14
+Checkpoint used : snn_T32_init.pt (epoch 15, val acc 90.75%)
+Status          : COMPLETE
