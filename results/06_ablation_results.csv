@@ -1,0 +1,4 @@
+model,seed,accuracy,energy_nj,macs,params
+SmallANN,42,91.67,5138.46,1117056,105866
+SmallANN,123,91.64,5138.46,1117056,105866
+SmallANN,7,91.52,5138.46,1117056,105866
