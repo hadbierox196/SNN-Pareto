@@ -1,0 +1,35 @@
+FIGURE CAPTIONS — Week 5
+========================
+
+Figure 1 (Panel A): Energy–Accuracy Pareto Frontier (Fashion-MNIST)
+--------------------------------------------------------------------
+Energy is estimated using the Lemaire et al. 45 nm CMOS model (0.9 pJ
+per synaptic operation for SNNs; 4.6 pJ per MAC for the ANN); filled
+circles are Pareto-non-dominated SNN operating points at
+T ∈ {1, 2, 4, 8} with the dashed line tracing the frontier, hollow
+circles are dominated points (T=16, 32, 64), the red star is the ANN
+baseline, and all error bars represent ±1 std across 3 random seeds.
+No SNN operating point dominates the ANN: the ANN achieves 92.97%
+accuracy at 21,362 nJ, while the best SNN (T=8) reaches 89.69% at
+3,910 nJ — a 3.28% accuracy gap with a 5.5× energy saving.
+These results establish that rate-coded SNNs trained with surrogate
+gradients on Fashion-MNIST occupy a distinct and non-overlapping region
+of the energy–accuracy space relative to an equivalent ANN, and that
+T=8 is the Pareto-optimal operating point within the SNN design space.
+
+
+Figure 2 (Panel B): Marginal Accuracy Gain per Timestep Doubling (Fashion-MNIST)
+----------------------------------------------------------------------------------
+Each point shows the increase in mean test accuracy when T is doubled
+(ΔAcc / Δlog₂T), plotted at the right endpoint of each interval on a
+log₂ x-axis; error bars are propagated as √(σᵢ² + σᵢ₋₁²) from
+per-T seed standard deviations; the dashed line marks the 0.5%
+threshold used to define T*, and the shaded region indicates the
+negligible-gain zone.
+Marginal gain decays from 4.17% (T=1→2) to 1.39% (T=4→8) and crosses
+below the 0.5% threshold at T=16, identifying T*=8 as the last
+timestep at which doubling T yields a meaningful accuracy improvement.
+The non-monotonic values at T=16 (−0.16% ± 0.36%) and T=64
+(−0.11% ± 0.48%) are within one standard error of zero and reflect
+seed-level training variance rather than a systematic accuracy decline,
+confirming that the plateau beyond T=8 is genuine.
