@@ -1,8 +1,10 @@
 # SNN-Pareto
 
+[![DOI](https://zenodo.org/badge/1268503330.svg)](https://doi.org/10.5281/zenodo.20726698)
+
 **Companion code for:**
 Farooq, H. (2025). Energy--Accuracy Trade-offs in Spiking Neural Networks: A Pareto Analysis on Fashion-MNIST.
-DOI: [to be assigned upon Zenodo deposit]
+DOI: https://doi.org/10.5281/zenodo.20726698
 
 ---
 
@@ -141,7 +143,7 @@ If you use this code or the associated results, please cite the manuscript and t
 
 ```
 Farooq, H. (2025). Energy--Accuracy Trade-offs in Spiking Neural Networks:
-A Pareto Analysis on Fashion-MNIST. DOI: [to be assigned upon Zenodo deposit]
+A Pareto Analysis on Fashion-MNIST. 
 ```
 
 A DOI-archived snapshot of this repository will be deposited on Zenodo to ensure long-term reproducibility.
