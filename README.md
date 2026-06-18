@@ -1,6 +1,10 @@
 # SNN-Pareto
 
 [![DOI](https://zenodo.org/badge/1268503330.svg)](https://doi.org/10.5281/zenodo.20726698)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Python 3.10](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/)
+[![Platform: Google Colab](https://img.shields.io/badge/Platform-Google%20Colab-orange)](https://colab.research.google.com/)
+
 
 **Companion code for:**
 Farooq, H. (2025). Energy--Accuracy Trade-offs in Spiking Neural Networks: A Pareto Analysis on Fashion-MNIST.
