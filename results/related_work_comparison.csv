@@ -1,0 +1,4 @@
+Study,Evaluation setting,Adaptive mechanism,Reported accuracy result,Reported efficiency result,Comparability note
+"SEENN-II (Li et al., 2023)",CIFAR-10 / ResNet-19,RL-selected temporal early exit,96.1%,1.08 timesteps,Different architecture/dataset; direct comparison not appropriate
+"AOI SNN (Wu et al., 2024)",Frame- and event-based datasets,Spatial-temporal regularisation + cutoff,0.50–0.64% accuracy drop on reported event datasets,2.14–2.89× faster than pre-configured timestep,"Different training method, datasets, and evaluation setup"
+This study,Fashion-MNIST / 824k-parameter CNN-SNN,Validation-selected confidence stopping,90.18%,15.13 mean timesteps,Same trained model; no architectural change; analytical energy model
