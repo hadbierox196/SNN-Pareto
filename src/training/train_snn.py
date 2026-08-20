@@ -370,14 +370,3 @@ def train_snn(
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 
-if __name__ == "__main__":
-    history = train_snn(
-        T              = 32,
-        epochs         = 20,
-        lr             = 1e-3,
-        batch_size     = 128,
-        beta           = 0.9,
-        slope          = 25,
-        dropout        = 0.3,
-        seed           = 42,
-        ann_checkpoint = "checkpoints/ann_baseline.pt",
