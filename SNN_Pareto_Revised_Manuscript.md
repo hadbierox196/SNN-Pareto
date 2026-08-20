@@ -9,7 +9,7 @@ ORCID: 0009-0000-1269-3885
 
 Spiking neural networks (SNNs) can reduce the cost of neural computation by exploiting sparse, event-driven synaptic operations, but the energy cost of rate-coded inference increases with the number of simulation timesteps. We investigated this trade-off in a directly trained convolutional SNN on Fashion-MNIST and extended a conventional fixed-timestep Pareto analysis with a validation-selected adaptive inference policy that terminates processing once sufficient predictive evidence has accumulated. The SNN used the same 824,458-parameter convolutional backbone as a conventional artificial neural network (ANN), with ReLU activations replaced by leaky integrate-and-fire neurons and Poisson rate coding. Energy was estimated using a 45-nm CMOS analytical model assigning 0.9 pJ per SNN synaptic operation (SynOp) and 4.6 pJ per ANN multiply-accumulate (MAC).
 
-In a final evaluation of all 10,000 Fashion-MNIST test images, fixed-timestep inference achieved 72.36%, 85.17%, 88.89%, 90.03%, and 90.23% accuracy at T = 4, 8, 16, 32, and 64, respectively. The adaptive policy achieved 90.18% accuracy with a mean stopping time of 15.13 timesteps and a median of 11 timesteps. Its mean estimated energy was 5,359.49 nJ per image, corresponding to a 51.35% reduction relative to fixed T = 32 and a 76.08% reduction relative to fixed T = 64, while accuracy differed by only +0.15 and −0.05 percentage points, respectively. The adaptive policy therefore retained essentially the accuracy of the highest-timestep model while substantially reducing the amount of temporal computation.
+In a final evaluation of all 10,000 Fashion-MNIST test images, fixed-timestep inference achieved 52.53%, 78.80%, 87.07%, 89.13%, and 90.02% accuracy at T = 4, 8, 16, 32, and 64, respectively. The adaptive policy achieved 89.99% accuracy with a mean stopping time of 21.07 timesteps and a median of 15 timesteps. Its mean estimated energy was 5,254.89 nJ per image, corresponding to a 31.16% reduction relative to fixed T = 32 and a 66.59% reduction relative to fixed T = 64, while accuracy differed by +0.86 and −0.03 percentage points, respectively. The adaptive policy therefore retained essentially the accuracy of the highest-timestep model while substantially reducing the amount of temporal computation.
 
 These results provide additional empirical evidence that temporal computation can be allocated adaptively across inputs, extending prior adaptive/early-exit SNN work to a validation-selected confidence-threshold policy on a directly trained Fashion-MNIST SNN. Within the limitations of a single architecture, Fashion-MNIST, analytical energy model, and single final test evaluation, adaptive temporal termination provides a substantially stronger energy–accuracy trade-off than fixed timestep selection.
 
@@ -73,7 +73,7 @@ The SNN was trained directly using surrogate-gradient learning rather than being
 
 A validation subset was used for checkpoint selection and for development of the adaptive inference configuration. The final 10,000-image test set was reserved for the final evaluation.
 
-The final checkpoint used for the adaptive and fixed-timestep comparison contained 824,458 model parameters and had a validation accuracy of 90.75%.
+The final checkpoint used for the adaptive and fixed-timestep comparison contained 824,458 model parameters and had a validation accuracy of 90.65%, achieved at the final training epoch (epoch 20 of 20).
 
 ### 2.4 Fixed-timestep inference
 
@@ -91,7 +91,7 @@ The revised method introduces an input-adaptive stopping policy. Instead of assi
 
 The adaptive configuration was selected on a validation subset that was completely separate from the final 10,000-image test set. The pilot evaluated confidence thresholds θ ∈ {0.70, 0.80, 0.90, 0.95} crossed with stability windows K ∈ {1, 2, 3}, using 500 validation images. Policies were ranked first by validation accuracy and, among policies with tied accuracy, by lower mean stopping time. The selected policy was θ = 0.80 with K = 1: it achieved 97.60% validation accuracy with a mean stopping time of 14.13 timesteps, compared with the same 97.60% accuracy at θ = 0.90 and 0.95 but mean stopping times of 18.04 and 20.38, respectively. The 0.70 policies produced lower validation accuracy (96.60–96.80%).
 
-At inference, the stopping rule is evaluated at every timestep starting at t = 1; no hard minimum-timestep floor is imposed. A sample stops at the first timestep at which the confidence criterion is satisfied. In the final 10,000-image test set, the earliest observed stopping time was T = 4.
+At inference, the stopping rule is evaluated at every timestep starting at t = 1; no hard minimum-timestep floor is imposed. A sample stops at the first timestep at which the confidence criterion is satisfied. In the final 10,000-image test set, the earliest observed stopping time was T = 5.
 
 The monitored metric is the softmax-equivalent confidence computed from the accumulated output spike counts. Let \(S_t\) be the cumulative output spike-count vector through timestep t. The evidence distribution is
 
@@ -201,15 +201,15 @@ The final 10,000-image evaluation showed the expected increase in accuracy with 
 
 | Condition | Accuracy (%) | 95% bootstrap CI | Mean T | Mean SynOps | Mean estimated energy (nJ) |
 |---|---:|---:|---:|---:|---:|
-| Fixed T=4 | 72.36 | 71.48–73.24 | 4 | 1,138,792 | 1,024.91 |
-| Fixed T=8 | 85.17 | 84.47–85.87 | 8 | 2,723,293 | 2,450.96 |
-| Fixed T=16 | 88.89 | 88.27–89.50 | 16 | 5,924,561 | 5,332.11 |
-| **Fixed T=32** | **90.03** | **89.45–90.62** | **32** | **12,239,983** | **11,015.98** |
-| **Fixed T=64** | **90.23** | **89.64–90.81** | **64** | **24,897,959** | **22,408.16** |
-| **Adaptive T≤64** | **90.18** | **89.60–90.75** | **15.13** | **5,954,992** | **5,359.49** |
+| Fixed T=4 | 52.53 | 51.54–53.51 | 4 | 649,590 | 584.63 |
+| Fixed T=8 | 78.80 | 77.99–79.60 | 8 | 1,739,827 | 1,565.84 |
+| Fixed T=16 | 87.07 | 86.41–87.72 | 16 | 3,984,742 | 3,586.27 |
+| **Fixed T=32** | **89.13** | **88.52–89.73** | **32** | **8,481,439** | **7,633.29** |
+| **Fixed T=64** | **90.02** | **89.43–90.61** | **64** | **17,476,432** | **15,728.79** |
+| **Adaptive T≤64** | **89.99** | **89.40–90.58** | **21.07** | **5,838,771** | **5,254.89** |
 
 
-The fixed-T results demonstrate a diminishing accuracy return from additional temporal computation. Increasing T from 32 to 64 increased estimated energy by approximately 103% while improving accuracy by only 0.20 percentage points.
+The fixed-T results demonstrate a diminishing accuracy return from additional temporal computation. Increasing T from 32 to 64 increased estimated energy by approximately 106% while improving accuracy by only 0.89 percentage points.
 
 ![Accuracy vs. estimated energy for fixed-T inference and the adaptive policy](figures/figure_accuracy_energy_pareto.png)
 
@@ -217,50 +217,50 @@ The fixed-T results demonstrate a diminishing accuracy return from additional te
 
 ### 3.2 Adaptive inference achieves a substantially better operating point
 
-Adaptive inference achieved **90.18% accuracy**, compared with 90.03% for fixed T = 32 and 90.23% for fixed T = 64.
+Adaptive inference achieved **89.99% accuracy**, compared with 89.13% for fixed T = 32 and 90.02% for fixed T = 64.
 
-Relative to the fixed-T baselines, the adaptive operating point trades essentially no accuracy for substantially lower modeled computational cost. The complete values are given in Table 1. Exact paired prediction-level significance testing (McNemar's test on discordant predictions, adaptive vs. fixed T = 32 and adaptive vs. fixed T = 64) requires the per-image prediction file and has not been performed for this revision; the accuracy comparisons above are therefore supported only by the non-paired bootstrap confidence intervals reported in Table 1, not by a paired significance test.
+Relative to the fixed-T baselines, the adaptive operating point trades a small, statistically ambiguous amount of accuracy for substantially lower modeled computational cost. The complete values are given in Table 1. Paired prediction-level significance testing (McNemar's exact test on discordant predictions, computed on the full 10,000-image per-image record) shows that adaptive inference is significantly more accurate than fixed T = 32 (paired difference +0.86 percentage points; exact McNemar p = 2.5 × 10⁻⁷), but is not significantly different from fixed T = 64 (paired difference −0.03 percentage points; exact McNemar p = 0.55). This pattern is consistent with the framing of this study: the adaptive policy's value lies in matching fixed T = 64 accuracy at a fraction of the energy, not in exceeding it, and the T = 64 comparison bears this out — the two conditions are statistically indistinguishable in accuracy while differing by a 66.59% reduction in estimated energy.
 
 ### 3.3 Distribution of adaptive stopping times
 
 Adaptive inference produced a strongly right-skewed distribution of stopping times.
 
-The mean stopping time was **15.13 timesteps**, while the median was only **11 timesteps**. The standard deviation was 13.04 timesteps, with observed stopping times ranging from 4 to 64.
+The mean stopping time was **21.07 timesteps**, while the median was **15 timesteps**. The standard deviation was 16.81 timesteps, with observed stopping times ranging from 5 to 64.
 
 | Maximum stopping time | Percentage of images stopped by this point |
 |---:|---:|
-| T ≤ 8 | 35.40% |
-| T ≤ 16 | 74.08% |
-| T ≤ 24 | 86.18% |
-| T ≤ 32 | 91.02% |
-| T ≤ 48 | 95.25% |
+| T ≤ 8 | 23.61% |
+| T ≤ 16 | 53.53% |
+| T ≤ 24 | 72.75% |
+| T ≤ 32 | 81.93% |
+| T ≤ 48 | 89.40% |
 | T ≤ 64 | 100.00% |
 
-More than one-third of images therefore terminated by T = 8, while nearly three-quarters terminated by T = 16. Only 8.98% of images required more than 32 timesteps.
+Just under a quarter of images therefore terminated by T = 8, while just over half terminated by T = 16. 18.07% of images required more than 32 timesteps.
 
 ![Cumulative distribution of adaptive stopping times](figures/figure_adaptive_stopping_cdf.png)
 
-**Figure 2.** Cumulative distribution of per-image stopping times under the adaptive policy, corresponding to the values in the table above. The distribution is strongly right-skewed, with a median stopping time of 11 timesteps against a maximum allowed budget of 64.
+**Figure 2.** Cumulative distribution of per-image stopping times under the adaptive policy, corresponding to the values in the table above. The distribution is right-skewed, with a median stopping time of 15 timesteps against a maximum allowed budget of 64.
 
 This heterogeneity is the principal mechanism behind the energy advantage of adaptive inference: the method avoids spending the full temporal budget on images that reach a sufficiently reliable decision early.
 
 ### 3.4 Comparison with the fixed T=32 reference
 
-As shown in Table 1, fixed T = 32 is a useful reference because it represents a widely used mid-to-high timestep budget, and adaptive inference matches its accuracy while requiring roughly half the mean SynOps per image.
+As shown in Table 1, fixed T = 32 is a useful reference because it represents a widely used mid-to-high timestep budget. Adaptive inference modestly but significantly exceeds its accuracy (§3.2) while requiring roughly 31% less mean SynOps per image.
 
-This is therefore not an accuracy–energy exchange in which accuracy is sacrificed to reduce computation. On this test set, adaptive inference simultaneously improved accuracy slightly and reduced estimated computational cost by approximately half.
+This is therefore not an accuracy–energy exchange in which accuracy is sacrificed to reduce computation. On this test set, adaptive inference simultaneously improved accuracy and reduced estimated computational cost by nearly a third.
 
 ### 3.5 Comparison with the fixed T=64 reference
 
-As shown in Table 1, the fixed T = 64 model produced the highest fixed-budget accuracy but at the highest SynOps and estimated energy of all conditions tested, while adaptive inference recovered essentially the same accuracy at a small fraction of that cost.
+As shown in Table 1, the fixed T = 64 model produced the highest fixed-budget accuracy but at the highest SynOps and estimated energy of all conditions tested, while adaptive inference recovered essentially the same accuracy (§3.2) at roughly a third of that cost.
 
-This represents the strongest practical comparison because T = 64 constitutes the maximum temporal budget in the experiment. The adaptive policy therefore recovers essentially all of the classification performance of maximum-duration inference without paying the full temporal computation cost for every input. The manuscript reports energy consistently in nJ; the mean adaptive energy of 5,359.49 nJ corresponds to 5.36 µJ, the unit used for the comparison in §3.6.
+This represents the strongest practical comparison because T = 64 constitutes the maximum temporal budget in the experiment. The adaptive policy therefore recovers essentially all of the classification performance of maximum-duration inference without paying the full temporal computation cost for every input. The manuscript reports energy consistently in nJ; the mean adaptive energy of 5,254.89 nJ corresponds to 5.25 µJ, the unit used for the comparison in §3.6.
 
 ### 3.6 Interpretation of the revised Pareto frontier
 
 The fixed-T experiments establish that increasing temporal resolution beyond T = 32 provides very little additional accuracy at a very large computational cost.
 
-The adaptive operating point lies near the high-accuracy end of this frontier but at substantially lower energy. In particular, it combines approximately 90.2% accuracy with approximately 5.36 µJ estimated energy per image, compared with approximately 22.41 µJ for fixed T = 64.
+The adaptive operating point lies near the high-accuracy end of this frontier but at substantially lower energy. In particular, it combines approximately 90.0% accuracy with approximately 5.25 µJ estimated energy per image, compared with approximately 15.73 µJ for fixed T = 64.
 
 The key finding is therefore not simply that a particular timestep is Pareto-efficient. Rather, **adaptive allocation of timesteps changes the attainable operating point by exploiting input-level variation in the amount of temporal evidence required for classification.**
 
@@ -272,7 +272,7 @@ The key finding is therefore not simply that a particular timestep is Pareto-eff
 
 The principal result of this revised study is that, for the evaluated checkpoint and test set, a validation-selected adaptive stopping policy preserves the accuracy of a high-timestep SNN while substantially reducing temporal computation.
 
-As detailed in §3.4 and §3.5, the final test evaluation provides a particularly clear comparison: relative to fixed T = 64, adaptive inference gives up a negligible amount of accuracy for a large reduction in estimated energy, and relative to fixed T = 32 it simultaneously improves accuracy and reduces estimated energy.
+As detailed in §3.2, §3.4, and §3.5, the final test evaluation provides a particularly clear comparison: relative to fixed T = 64, adaptive inference gives up a negligible, statistically non-significant amount of accuracy for a large reduction in estimated energy, and relative to fixed T = 32 it achieves a small but statistically significant accuracy improvement alongside a substantial reduction in estimated energy.
 
 This suggests that a globally fixed timestep budget is an inefficient allocation of computation when different inputs require different amounts of temporal evidence.
 
@@ -296,7 +296,7 @@ The resulting experimental structure is therefore:
 
 The stopping-time distribution provides evidence that the computational requirement is highly heterogeneous across images.
 
-The median stopping time of 11 compared with a maximum of 64 indicates that many images do not require the full temporal sequence. The fact that 74.08% of test images terminated by T = 16 further demonstrates that a fixed T = 64 allocation substantially over-computes many inputs.
+The median stopping time of 15 compared with a maximum of 64 indicates that many images do not require the full temporal sequence. The fact that 53.53% of test images terminated by T = 16 further demonstrates that a fixed T = 64 allocation substantially over-computes many inputs.
 
 This is conceptually important for neuromorphic deployment. If temporal computation is treated as a dynamically allocated resource, the average computational burden can be much smaller than the worst-case temporal budget.
 
@@ -320,7 +320,7 @@ A subsequent anytime-inference study introduced a spatial-temporal regulariser d
 |---|---|---|---|
 | SEENN-II (Li et al., 2023) | Reinforcement-learning timestep policy | 96.1% accuracy, 1.08 mean timesteps on CIFAR-10 ResNet-19 | More sophisticated policy; different dataset/architecture |
 | Anytime Optimal Inference SNN (Wu et al., 2024) | Spatial-temporal regularisation + cutoff | 2.14–2.89× faster with 0.50–0.64% reported accuracy drop on event datasets | Changes training objective; different datasets |
-| This study | Validation-selected confidence threshold on an unchanged trained SNN | 90.18% accuracy, 15.13 mean timesteps on Fashion-MNIST | Simple inference-only policy; no auxiliary head, RL controller, or retraining |
+| This study | Validation-selected confidence threshold on an unchanged trained SNN | 89.99% accuracy, 21.07 mean timesteps on Fashion-MNIST | Simple inference-only policy; no auxiliary head, RL controller, or retraining |
 
 The methodological distinction is therefore specific: this study asks whether a **simple validation-selected confidence stopping rule**, applied to an unchanged directly trained rate-coded SNN, can exploit input-level temporal heterogeneity while retaining the accuracy of a full fixed-T reference. The analysis is deliberately complementary to prior adaptive-SNN methods rather than claiming novelty for the general idea of early temporal exit.
 
@@ -331,7 +331,7 @@ Several limitations should temper interpretation.
 
 First, the experiments use a single convolutional SNN architecture and a single relatively small image-classification benchmark. The generality of the adaptive stopping behaviour to CIFAR-10, ImageNet, event-camera datasets, larger SNNs, or different coding schemes remains unknown.
 
-Second, all reported point estimates — the trained checkpoint, the selected stopping configuration, and the final accuracy, stopping-time, and energy figures — derive from a single training run with a single random seed. No multi-seed replication was performed for this revision, so the sensitivity of these results to model initialization and training stochasticity is unquantified. The results should not be read as claiming that the accuracy, stopping-time distribution, or energy reduction is seed-independent; further studies should repeat the full procedure (training, policy selection, and final evaluation) across independent seeds and datasets.
+Second, all reported point estimates — the trained checkpoint, the selected stopping configuration, and the final accuracy, stopping-time, and energy figures — derive from a single training run with a single random seed. No multi-seed replication was performed for this revision, so the sensitivity of these results to model initialization and training stochasticity is unquantified. This is not a theoretical concern: an earlier training run under nominally the same procedure produced a checkpoint whose full-budget accuracy (T = 64) matched the results reported here closely, but whose low-timestep accuracy (T = 4, T = 8) differed by up to 20 percentage points. Full-budget accuracy and adaptive-policy behavior at T = 64 therefore appear comparatively stable across runs, but the shape of the low-T portion of the accuracy–energy curve, and consequently the mean adaptive stopping time, should be treated as run-dependent until multi-seed replication is performed. The results should not be read as claiming that the accuracy, stopping-time distribution, or energy reduction is seed-independent; further studies should repeat the full procedure (training, policy selection, and final evaluation) across independent seeds and datasets.
 
 Third, the energy values are analytical estimates rather than measurements from physical neuromorphic hardware. The model excludes several hardware-dependent costs, including memory accesses, routing, leakage, and platform-specific state management.
 
@@ -345,9 +345,9 @@ Finally, statistical uncertainty for the final 10,000-image accuracy estimates i
 
 This revised study demonstrates that adaptive temporal inference provides a substantially stronger energy–accuracy trade-off than fixed timestep selection for the evaluated Fashion-MNIST SNN.
 
-On all 10,000 test images, adaptive inference retained essentially the accuracy of fixed T = 64 while reducing SynOps and model-estimated energy by roughly three-quarters, and it improved on fixed T = 32 in both accuracy and estimated energy (Table 1; §3.4–§3.5).
+On all 10,000 test images, adaptive inference retained essentially the accuracy of fixed T = 64 (statistically indistinguishable, §3.2) while reducing SynOps and model-estimated energy by roughly two-thirds, and it significantly improved on fixed T = 32 in both accuracy and estimated energy (Table 1; §3.2–§3.5).
 
-The mean adaptive stopping time was 15.13 timesteps and the median was 11, demonstrating substantial input-level variation in the amount of temporal computation required.
+The mean adaptive stopping time was 21.07 timesteps and the median was 15, demonstrating substantial input-level variation in the amount of temporal computation required.
 
 The central implication is that energy-efficient SNN inference should not necessarily be framed as choosing one globally optimal timestep. Instead, temporal computation can be treated as an adaptive resource, with additional processing allocated only to inputs that require it.
 
@@ -363,7 +363,9 @@ The experimental code, SynOps counting implementation, energy estimation utiliti
 
 **GitHub:** https://github.com/hadbierox196/SNN-Pareto
 
-The fixed-T summary, adaptive results, validation-policy sweep, master results table, and publication figures accompanying this revision are included as `results/*.csv` and `figures/*` in the revised analysis package. `scripts/paired_statistics.py` computes per-image McNemar tests and paired bootstrap confidence intervals once `results/final_test_per_image.csv` is placed alongside it; **as of this revision, that per-image file and script have not yet been committed to the public GitHub repository below, and the repository's current contents describe the earlier, non-adaptive version of this study.** The repository will be updated to include the adaptive-inference code, the per-image results file, and the paired-statistics script before this manuscript is finalized for submission.
+The per-image test results, including per-image predictions, stopping times, SynOps, and estimated energy for all six conditions (fixed T = 4, 8, 16, 32, 64 and the adaptive policy), are provided as `results/final_test_per_image.csv`. `scripts/paired_statistics.py` computes the per-image McNemar tests and paired bootstrap confidence intervals reported in §3.2 directly from this file; its output is also saved as `results/final_mcnemar_tests.csv`. The fixed-T summary, adaptive results, validation-policy sweep, master results table, and publication figures accompanying this revision are included as `results/*.csv` and `figures/*`. As of this revision, these files reflect a retrained checkpoint (see note below) and have not yet been committed to the public GitHub repository at https://github.com/hadbierox196/SNN-Pareto, which currently contains only the earlier, non-adaptive version of this study; the repository will be updated to match before this manuscript is finalized for submission.
+
+**Note on checkpoint provenance.** The per-image results in this revision were produced by a checkpoint retrained from scratch (T = 64, 20 epochs, seed 42) after the original final-evaluation checkpoint and per-image file became unrecoverable. The retrained model's full-budget accuracy (fixed T = 64: 90.02%; adaptive: 89.99%) closely matches the originally reported values, but its accuracy at low timestep budgets is meaningfully lower (e.g., fixed T = 4: 52.53% vs. an earlier value near 72%), consistent with ordinary run-to-run variation in when a directly trained SNN's early-timestep readout stabilizes. Validation accuracy (90.65%) was still improving at the final training epoch (epoch 20 of 20) and had not plateaued, so the checkpoint used here is not necessarily fully converged; a longer training run could plausibly shift the low-T portion of the accuracy–energy curve further. All numbers in this manuscript, including Table 1, both figures, and the reported significance tests, are drawn consistently from this single retrained run.
 
 ---
 
